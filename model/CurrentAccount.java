@@ -23,7 +23,7 @@ public class CurrentAccount implements Account {
 
     private LocalDateTime accountOpeningDateTime;
     private LocalDateTime accountClosingDateTime;
-    private String accountStatus;
+    private boolean accountStatus;
 
     private List<Transactions> transactions;    
 
@@ -48,19 +48,18 @@ public class CurrentAccount implements Account {
         this.dateOfBirth = dateOfBirth;
         this.accountOpeningDateTime = LocalDateTime.now();
         this.accountClosingDateTime = null;
-        this.accountStatus = "Active";
+        this.accountStatus = true;
         this.transactions = new ArrayList<>();
         this.interestRate = 0.0; // Current accounts typically do not earn interest
         this.minimumBalance = 1000.0; // Example minimum balance for current account        
     }
 
-    private String generatePassword(String panCardNumber2, LocalDate dateOfBirth2) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'generatePassword'");
+    private String generatePassword(String panCardNumber, LocalDate dateOfBirth) {
+        return panCardNumber.substring(panCardNumber.length()-4) + dateOfBirth.toString().substring(0, 4);
     }
 
     private String generateAccountNumber() {
-        return "";
+        return System.currentTimeMillis()+"";
     }
 
     @Override
@@ -86,8 +85,27 @@ public class CurrentAccount implements Account {
     }
 
     @Override
+    public void getAccountDetails() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getAccountDetails'");
+    }
+
+    @Override
+    public void changePassword() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'changePassword'");
+    }
+    
+    @Override
     public void disableAccount() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'disableAccount'");
     }
+
+    @Override
+    public void enableAccount() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'enableAccount'");
+    }
+
 }
