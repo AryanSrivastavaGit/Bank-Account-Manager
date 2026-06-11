@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import exceptionHandling.InvalidAmountException;
+
 public class SavingAccount implements Account {
     private String accountNumber;
     private String password;
@@ -67,23 +69,40 @@ public class SavingAccount implements Account {
     @Override
     public void deposit(double amount) {
         // Implementation for deposit
-
+        if(amount<0){
+            throw new InvalidAmountException("Amount should be greater than 0");
+        }
+        balance+=amount;
     }
 
     @Override
     public void withdraw(double amount) {
         // Implementation for withdraw
+        if(amount>balance){
+            throw new InvalidAmountException("Withdrawl amount should be less than or equal to balance");
+        }
+        balance-=amount;
     }
 
     @Override
     public double getBalance() {
         // Implementation for getting balance
-        return 0;
+        return balance;
     }
 
     @Override
     public void transfer(double amount, Account toAccount) {
         // TODO Auto-generated method stub
+        if(amount<0){
+            throw new InvalidAmountException("Amount should be greater than 0");
+        }
+
+        try {
+            
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+        
         throw new UnsupportedOperationException("Unimplemented method 'transfer'");
     }
 
