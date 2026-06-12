@@ -66,6 +66,10 @@ public class SavingAccount implements Account {
         return System.currentTimeMillis()+"";
     }
 
+    public String getAccountNumber(){
+        return accountNumber;
+    }
+
     @Override
     public void deposit(double amount) {
         // Implementation for deposit

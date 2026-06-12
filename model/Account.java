@@ -1,6 +1,8 @@
 package model;
 
-public interface Account{
+import java.io.Serializable;
+
+public interface Account extends Serializable{
     void deposit(double amount);
     void withdraw(double amount);
     double getBalance();
