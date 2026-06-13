@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import exceptionHandling.InvalidAmountException;
+import storageManagerService.StorageManager;
 
 public class SavingAccount implements Account {
     private String accountNumber;
@@ -27,15 +28,15 @@ public class SavingAccount implements Account {
     private LocalDateTime accountClosingDateTime;
     private boolean accountStatus;
 
-    private List<Transactions> transactions;    
+    private List<Transactions> transactions;
 
     private double interestRate;
     private double minimumBalance;
     private double transactionLimit;
 
     public SavingAccount(String accountType, double balance, String branchName, String ifscCode,
-                          String accountHolderName, String panCardNumber, String contactNumber, String aadharCardNumber,
-                          String email, String address, LocalDate dateOfBirth) {
+            String accountHolderName, String panCardNumber, String contactNumber, String aadharCardNumber,
+            String email, String address, LocalDate dateOfBirth) {
         this.accountNumber = generateAccountNumber();
         this.password = generatePassword(panCardNumber, dateOfBirth);
         this.accountType = accountType;
@@ -59,33 +60,33 @@ public class SavingAccount implements Account {
     }
 
     private String generatePassword(String panCardNumber, LocalDate dateOfBirth) {
-        return panCardNumber.substring(panCardNumber.length()-4) + dateOfBirth.toString().substring(0, 4);
+        return panCardNumber.substring(panCardNumber.length() - 4) + dateOfBirth.toString().substring(0, 4);
     }
 
     private String generateAccountNumber() {
-        return System.currentTimeMillis()+"";
+        return System.currentTimeMillis() + "";
     }
 
-    public String getAccountNumber(){
+    public String getAccountNumber() {
         return accountNumber;
     }
 
     @Override
     public void deposit(double amount) {
         // Implementation for deposit
-        if(amount<0){
+        if (amount < 0) {
             throw new InvalidAmountException("Amount should be greater than 0");
         }
-        balance+=amount;
+        balance += amount;
     }
 
     @Override
     public void withdraw(double amount) {
         // Implementation for withdraw
-        if(amount>balance){
+        if (amount > balance) {
             throw new InvalidAmountException("Withdrawl amount should be less than or equal to balance");
         }
-        balance-=amount;
+        balance -= amount;
     }
 
     @Override
@@ -95,43 +96,58 @@ public class SavingAccount implements Account {
     }
 
     @Override
-    public void transfer(double amount, Account toAccount) {
-        // TODO Auto-generated method stub
-        if(amount<0){
+    public void transfer(double amount, String toAccount) {
+        if (amount < 0) {
             throw new InvalidAmountException("Amount should be greater than 0");
+        }
+        
+        if (amount > balance) {
+            throw new InvalidAmountException("Insufficient balance for transfer");
         }
 
         try {
-            
+            Account acc = StorageManager.loadAccount(toAccount);
+            acc.deposit(amount);
+            this.balance -= amount;
+            System.out.println("Transfer successful. Amount transferred: " + amount);
         } catch (Exception e) {
-            // TODO: handle exception
+            System.out.println("Receiver account not valid: " + e);
         }
-        
-        throw new UnsupportedOperationException("Unimplemented method 'transfer'");
     }
 
     @Override
     public void getAccountDetails() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAccountDetails'");
+        System.out.println("Account type:" + accountType);
+        System.out.println("initial balance: " + balance);
+        System.out.println("branch name:" + branchName);
+        System.out.println("IFSC code:" + ifscCode);
+        System.out.println("account holder name:" + accountHolderName);
+        System.out.println("PAN card number:" + panCardNumber);
+        System.out.println("contact number:" + contactNumber);
+        System.out.println("Aadhar card number:" + aadharCardNumber);
+        System.out.println("email:" + email);
+        System.out.println("date of birth (YYYY-MM-DD):" + dateOfBirth);
+        System.out.println("Address: " + address);
     }
 
     @Override
-    public void changePassword() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'changePassword'");
+    public void changePassword(String oldPassword, String newPassword) {
+        if (oldPassword.equals(password)) {
+            password = newPassword;
+            System.out.println("Password changed successfully");
+        } else {
+            System.out.println("Wrong Password");
+        }
     }
-    
+
     @Override
     public void disableAccount() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'disableAccount'");
+        this.accountStatus = false;
     }
 
-	@Override
-	public void enableAccount() {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'enableAccount'");
-	}
+    @Override
+    public void enableAccount() {
+        this.accountStatus = true;
+    }
 
 }

@@ -11,52 +11,50 @@ import model.CurrentAccount;
 import model.SavingAccount;
 
 public class StorageManager {
-    private static final String dataFolder = "Accounts/";
+    private static final String dataFolder = "BankAccountManager/Accounts/";
 
-    public static void createAccountsFolder(){
+    public static void createAccountsFolder() {
         File folder = new File(dataFolder);
-        if(!folder.exists()){
+        if (!folder.exists()) {
             folder.mkdir();
             System.out.println("Accounts folder created at: " + folder.getAbsolutePath());
         }
     }
 
-    public static void saveAccount(Account account){
+    public static void saveAccount(Account account) {
 
         String fileName;
-        if(account instanceof SavingAccount){
+        if (account instanceof SavingAccount) {
             SavingAccount s = (SavingAccount) account;
             fileName = s.getAccountNumber() + ".dat";
-        }else{
+        } else {
             CurrentAccount s = (CurrentAccount) account;
             fileName = s.getAccountNumber() + ".dat";
         }
 
-        try(
-            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fileName));
-        ){
-            oos.writeObject(dataFolder+fileName);
+        try (
+                ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(dataFolder + fileName));) {
+            oos.writeObject(account);
             System.out.println("Saved " + fileName);
 
-        }catch(Exception e){
+        } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
         }
     }
 
-    public static Account loadAccount(String accountNumber){
+    public static Account loadAccount(String accountNumber) {
         String fileName = accountNumber + ".dat";
-        File file = new File(fileName);
+        File file = new File(dataFolder + fileName);
 
-        if(!file.exists()){
+        if (!file.exists()) {
             System.out.println("Account not found.");
             return null;
         }
 
-        try(
-            ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fileName))
-        ){
-            return (Account)ois.readObject();
-        }catch(Exception e){
+        try (
+                ObjectInputStream ois = new ObjectInputStream(new FileInputStream(dataFolder + fileName))) {
+            return (Account) ois.readObject();
+        } catch (Exception e) {
             System.out.println("Account not found.");
             return null;
         }
